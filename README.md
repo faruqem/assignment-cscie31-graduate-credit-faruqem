@@ -14,8 +14,8 @@ In this article we will look into some Node.js internals and performance. We wil
 3. Thread starvation and why Node.js is not particularly suitable for CPU intensive tasks.
 4. How we can use Node.js "cluster" module to take adavantage of a system with multi-core.
 
-### Closures, first class function and other JavaScript features:
-To understand Node.js performance, first we need to understand an important concept of JavaScript - "Closure". Below is the example of a closure where the inner function has access to the variable of the outer function even when the outer function has finished execution. This example also demonstrates few other important concepts of JavaScript language: 
+### Closures, First Class Function and other JavaScript Features:
+To understand Node.js performance, first we need to understand an important concept of JavaScript - "Closure". Below is the example of a closure where the inner function has access to the variable (`outerFuncVar = 5`) of the outer function even when the outer function has finished execution. This example also demonstrates few other important concepts of JavaScript language: 
 * Anonymus function - a function without a name.
 * Nested function - a function defined within another function.
 * First-class function - a function treated like a regular variable. 
@@ -23,7 +23,7 @@ To understand Node.js performance, first we need to understand an important conc
 
 Please, read the comments while checking the code for more explanation.
 
-#### You can execute the code here to see the output: https://jsfiddle.net/faruqem/4w12hko1/
+#### You can execute the following code here to see the output in console: https://jsfiddle.net/faruqem/4w12hko1/
 
 ```
 /*
