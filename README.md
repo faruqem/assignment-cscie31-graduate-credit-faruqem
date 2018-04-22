@@ -14,27 +14,28 @@ In this article we will look into some Node.js internals and performance. We wil
 3. Thread starvation and why Node.js is not particularly suitable for CPU intensive tasks.
 4. How we can use Node.js "cluster" module to take adavantage of a system with multi-core.
 
+### Closures, first class function and other JavaScript features:
+To understand Node.js performance, first we need to understand an important concept of JavaScript - "Closure". Below is the example of a closure where the inner function has access to the variable of the outer function even when the outer function has finished execution. This example also demonstrates few other important concepts of JavaScript function - anonymus function, nested function, first-class function and self invoking function.  
 
-<p>To understand Node.js performance, first we need to understand an important concept of JavaScript - "Closure". Below is the example of a closure where the inner function has access to the variable of the outer function even when the outer function has finished execution. This example also demonstrates few other important concepts of JavaScript function - anonymus function, nested function, first-class function and self invoking function.  
 ```
-    /**
-      * Outer function returns inner function which is assigned 
-      * to a variable - charactertistics of a first class function i.e. function that can be
-      * treated like a regular variable.
-    */
-    var func = (function () { //Outer anonymus function
-		            var outerFuncVar = 5; //Inner function retain this variable value of outer function 
-    						  //even though outer function finished execution - Closure
+/*
+  Outer function returns inner function which is assigned 
+  to a variable - charactertistics of a first class function i.e. function that can be
+  treated like a regular variable.
+*/
+var func = (function () { //Outer anonymus function
+  var outerFuncVar = 5; //Inner function retain this variable value of outer function 
+    					 //even though outer function finished execution - Closure
                     
-                    return function(innerFuncParameter) { //Nested inner anonymus function
-    	                console.log (`Sum: %s`, outerFuncVar + innerFuncParameter);
-                    }
-                })(); //Self invoked
+  return function(innerFuncParameter) { //Nested inner anonymus function
+    console.log (`Sum: %s`, outerFuncVar + innerFuncParameter);
+  }
+})(); //Self invoked
 
-    func(10); // 5 + 10 = 15
-    func(15); // 5 + 15 = 20
+func(10); // Output: 5 + 10 = 15
+func(15); // Output: 5 + 15 = 20
 ```
-<p>Now with our above knowledge of JavaScript, using closures let's simulate two web requests that require long opeartion of database access to retireve data. Using setTimeout function, long operation has been simulated. We can see from the execution of function clientRequest, request 1 did not block request 2, when the result is returned because of closure characteristics, the result set of request 1 and 2 correctly identified without any mixing up. This represents the event-driven, non-blocking I/O model of Node.js using a single thread. Because of the usage of a single thread to handle multiple requests, no time has been lost in context switching or new thread creation. At the same time none of the request blocked each other and all of them ran simultaneously. As soon as one request was completed, the response was sent to the appropriate request.  </p>
+Now with our above knowledge of JavaScript, using closures let's simulate two web requests that require long opeartion of database access to retireve data. Using setTimeout function, long operation has been simulated. We can see from the execution of function clientRequest, request 1 did not block request 2, when the result is returned because of closure characteristics, the result set of request 1 and 2 correctly identified without any mixing up. This represents the event-driven, non-blocking I/O model of Node.js using a single thread. Because of the usage of a single thread to handle multiple requests, no time has been lost in context switching or new thread creation. At the same time none of the request blocked each other and all of them ran simultaneously. As soon as one request was completed, the response was sent to the appropriate request.  </p>
 <pre>
   <code>
     console.log("");
