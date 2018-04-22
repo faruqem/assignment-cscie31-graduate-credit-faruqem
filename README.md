@@ -3,9 +3,6 @@
 ### Subject: Node.js Fundamentals and Performance
 ### Student: Mohiuddin Faruqe
 
-
-### Closure: 
-### Simulating a long operation: https://jsfiddle.net/faruqem/1wmn7f2p/
 ### Thread starvation: https://jsfiddle.net/faruqem/8o6f5y96/
 
 In this article we will look into some Node.js internals and performance. We will discuss:
@@ -21,7 +18,7 @@ To understand Node.js performance, first we need to understand an important conc
 * First-class function - a function treated like a regular variable. 
 * Self invoking function - function invoked while defined.  
 
-Please, read the comments while checking the code for more explanation.
+Please, read the inline comments while checking the code for more explanation.
 
 #### You can execute the following code here to see the output in console: https://jsfiddle.net/faruqem/4w12hko1/
 
@@ -43,55 +40,62 @@ var func = (function () { //Outer anonymus function
 func(10); // Output: 5 + 10 = 15
 func(15); // Output: 5 + 15 = 20
 ```
-Now with our above knowledge of JavaScript, using closures let's simulate two web requests that require long opeartion of database access to retireve data. Using setTimeout function, long operation has been simulated. We can see from the execution of function clientRequest, request 1 did not block request 2, when the result is returned because of closure characteristics, the result set of request 1 and 2 correctly identified without any mixing up. This represents the event-driven, non-blocking I/O model of Node.js using a single thread. Because of the usage of a single thread to handle multiple requests, no time has been lost in context switching or new thread creation. At the same time none of the request blocked each other and all of them ran simultaneously. As soon as one request was completed, the response was sent to the appropriate request.  </p>
-<pre>
-  <code>
-    console.log("");
-    console.log("Simulating a long operation like database access");
-    console.log("-------------------------------------------");
-            
-    function clientRequest(request) {
-        console.log('Accessing the database to retrieve data that may take long time to complete, for request id: ', request.id);
-        accesDBAndRetrieveData(request, response);
-    }
-            
-    function accesDBAndRetrieveData(request, callbackResponse) {
-        // 1-5 secs operation simulation
-        var timeoutMS = (Math.round(Math.random() * 4) + 1) * 1000;
-        setTimeout(callbackResponse, timeoutMS, request);
-    }
-            
-    var response = function (request) {
-        var dbRecord = {};
-        console.log('Response to request id:', request.id);   
-        if(request.id == 1) {
-            dbRecord = {
-                "customer_id": 1,
-                "customer_name": "Mo Faruqe"
-            } 
-        } else {
-            dbRecord = {
-                "customer_id": 2,
-                "customer_name": "Ru Haque"
-            }
-        }
-        console.log(dbRecord);
-    }
-            
-    //Simulate two web requests
-    clientRequest({ id: 1 });
-    clientRequest({ id: 2 });
+### Handling of Multiple Client Requests
+Now with our above knowledge of JavaScript, using closures let's simulate two web requests that require long opeartion of database access to retireve data. Using setTimeout function, long running operation has been simulated. We can see from the execution of `function clientRequest()`, request 1 did not block request 2, when the result is returned because of closure characteristics, the result set of request 1 and 2 correctly identified without any mixing up. This represents the event-driven, non-blocking I/O model of Node.js using a single thread. Because of the usage of a single thread to handle multiple requests, no time has been lost in context switching or new thread creation. At the same time none of the requests blocked each other and all of them ran simultaneously. As soon as the operation is completed, the response is sent to the appropriate request via its callback function.  </p>
 
-    /* Sample output:
-    Accessing the database to retrieve data that may take long time to complete, for request id: 1
-    Accessing the database to retrieve data that may take long time to complete, for request id: 2
-    Response to request id: 2
-    {customer_id: 2, customer_name: "Ru Haque"}
-    Response to request id: 1
-    {customer_id: 1, customer_name: "Mo Faruqe"}
-    */            
-    </code>
-</pre>
+Please, read the inline comments while checking the code for more explanation.
+
+#### You can execute the following code here to see the output in console: https://jsfiddle.net/faruqem/1wmn7f2p/
+
+```
+console.log("Simulating a long operation like database access");
+            
+function clientRequest(request) {
+  console.log('Accessing the database to retrieve data that may take long time to complete, for request id: ', request.id);
+
+  //Inner function call that remembers the "request" passed from the outer function - characteristic of a closure.
+  accesDBAndRetrieveData(request, response);
+}
+            
+function accesDBAndRetrieveData(request, callbackResponse) {
+  // 1-5 secs operation simulation
+  var timeoutMS = (Math.round(Math.random() * 4) + 1) * 1000;
+  
+  setTimeout(callbackResponse, timeoutMS, request);
+}
+            
+var response = function (request) {
+  var dbRecord = {};
+  console.log('Response to request id:', request.id);   
+  if(request.id == 1) {
+    dbRecord = {
+      "customer_id": 1,
+      "customer_name": "Mo Faruqe"
+    } 
+  } else {
+    dbRecord = {
+      "customer_id": 2,
+      "customer_name": "Ru Haque"
+    }
+  }
+  
+  console.log(dbRecord);
+}
+            
+//Simulate two web requests
+clientRequest({ id: 1 });
+clientRequest({ id: 2 });
+
+/* Sample output:
+Accessing the database to retrieve data that may take long time to complete, for request id: 1
+Accessing the database to retrieve data that may take long time to complete, for request id: 2
+Response to request id: 2
+{customer_id: 2, customer_name: "Ru Haque"}
+Response to request id: 1
+{customer_id: 1, customer_name: "Mo Faruqe"}
+*/            
+```
+
 <p>Our sample code above simulated a database operation. Node.js is primarily suited for this kind of operation. But it's not very effcient in case of any CPU instensive operation. Look at the code sample below. There is function fibonacciNumber() to simulate a CPU intensive long running operation. By commenting out this function, when we run the code block it takes around 3 secs to finish the execution since SetTimeout() function is set to return the execute the callback function after 3,000 ms i.e. 3 secs. But if we uncomment the fibonacci function which simlulates CPU intesive operation, callback function of the setTimeout() function return approx. 15 secs based on your computer's CPU power. It's because though both the operations started asychronously, the fibonacci function blocked the CPU, so the setTimeout() function from the same thread could not finish its execution on time. This is called Thread Startvation. So Node.js is good for database related longrunning operation which does not block the CPU but not very efficent if you are running concurrent CPU intesive operation using the single thread.  </p>
 <pre>
     <code>
