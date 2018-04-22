@@ -9,15 +9,14 @@
 ### Thread starvation: https://jsfiddle.net/faruqem/8o6f5y96/
 
 In this article we will look into some Node.js internals and performance. We will discuss:
-    1. Closures, first class function and other JavaScript features that will help us understanding Node.js design principles.
-    2. How Node.js handles multiple client requests asynchonoisly with a single thread.
-    3. Thread starvation and why Node.js is not particularly suitable for CPU intensive tasks.
-    4. How we can use Node.js "cluster" module to take adavantage of a system with multi-core.
+    * Closures, first class function and other JavaScript features that will help us understanding Node.js design principles.
+    * How Node.js handles multiple client requests asynchonoisly with a single thread.
+    * Thread starvation and why Node.js is not particularly suitable for CPU intensive tasks.
+    * How we can use Node.js "cluster" module to take adavantage of a system with multi-core.
 
 
 <p>To understand Node.js performance, first we need to understand an important concept of JavaScript - "Closure". Below is the example of a closure where the inner function has access to the variable of the outer function even when the outer function has finished execution. This example also demonstrates few other important concepts of JavaScript function - anonymus function, nested function, first-class function and self invoking function.  
-<pre>
-  <code>
+```
     /**
       * Outer function returns inner function which is assigned 
       * to a variable - charactertistics of a first class function i.e. function that can be
@@ -34,9 +33,7 @@ In this article we will look into some Node.js internals and performance. We wil
 
     func(10); // 5 + 10 = 15
     func(15); // 5 + 15 = 20
-  </code>
-</pre>
-<br>
+```
 <p>Now with our above knowledge of JavaScript, using closures let's simulate two web requests that require long opeartion of database access to retireve data. Using setTimeout function, long operation has been simulated. We can see from the execution of function clientRequest, request 1 did not block request 2, when the result is returned because of closure characteristics, the result set of request 1 and 2 correctly identified without any mixing up. This represents the event-driven, non-blocking I/O model of Node.js using a single thread. Because of the usage of a single thread to handle multiple requests, no time has been lost in context switching or new thread creation. At the same time none of the request blocked each other and all of them ran simultaneously. As soon as one request was completed, the response was sent to the appropriate request.  </p>
 <pre>
   <code>
