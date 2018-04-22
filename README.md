@@ -9,10 +9,10 @@
 ### Thread starvation: https://jsfiddle.net/faruqem/8o6f5y96/
 
 In this article we will look into some Node.js internals and performance. We will discuss:
-    * Closures, first class function and other JavaScript features that will help us understanding Node.js design principles.
-    * How Node.js handles multiple client requests asynchonoisly with a single thread.
-    * Thread starvation and why Node.js is not particularly suitable for CPU intensive tasks.
-    * How we can use Node.js "cluster" module to take adavantage of a system with multi-core.
+1. Closures, first class function and other JavaScript features that will help us understanding Node.js design principles.
+2. How Node.js handles multiple client requests asynchonoisly with a single thread.
+3. Thread starvation and why Node.js is not particularly suitable for CPU intensive tasks.
+4. How we can use Node.js "cluster" module to take adavantage of a system with multi-core.
 
 
 <p>To understand Node.js performance, first we need to understand an important concept of JavaScript - "Closure". Below is the example of a closure where the inner function has access to the variable of the outer function even when the outer function has finished execution. This example also demonstrates few other important concepts of JavaScript function - anonymus function, nested function, first-class function and self invoking function.  
