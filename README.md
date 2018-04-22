@@ -16,17 +16,18 @@ In this article we will look into some Node.js internals and performance. We wil
 
 ### Closures, first class function and other JavaScript features:
 To understand Node.js performance, first we need to understand an important concept of JavaScript - "Closure". Below is the example of a closure where the inner function has access to the variable of the outer function even when the outer function has finished execution. This example also demonstrates few other important concepts of JavaScript language: 
-    * Anonymus function - a function without a name.
-    * Nested function - a function defined within another function.
-    * First-class function - a function treated like a regular variable. 
-    * Self invoking function - function invoked while defined.  
+* Anonymus function - a function without a name.
+* Nested function - a function defined within another function.
+* First-class function - a function treated like a regular variable. 
+* Self invoking function - function invoked while defined.  
 
 Please, read the comments while checking the code for more explanation.
 
 ```
 /*
   Outer function returns inner function which is assigned 
-  to a variable - a charactertistic of a first class function i.e. function that can be treated like a regular variable.
+  to a variable - a charactertistic of a first class function 
+  i.e. function that can be treated like a regular variable.
 */
 var func = (function () { //Outer anonymus function
   var outerFuncVar = 5; //Inner function retain this variable value of outer function 
