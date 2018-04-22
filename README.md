@@ -4,7 +4,7 @@
 ### Student: Mohiuddin Faruqe
 
 
-### Closure: https://jsfiddle.net/faruqem/4w12hko1/
+### Closure: 
 ### Simulating a long operation: https://jsfiddle.net/faruqem/1wmn7f2p/
 ### Thread starvation: https://jsfiddle.net/faruqem/8o6f5y96/
 
@@ -23,9 +23,11 @@ To understand Node.js performance, first we need to understand an important conc
 
 Please, read the comments while checking the code for more explanation.
 
+#### You can execute the code here to see the output: https://jsfiddle.net/faruqem/4w12hko1/
+
 ```
 /*
-  Outer function returns inner function which is assigned 
+  Outer function returns inner function which is then assigned 
   to a variable - a charactertistic of a first class function 
   i.e. function that can be treated like a regular variable.
 */
