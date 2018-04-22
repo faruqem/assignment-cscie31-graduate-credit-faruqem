@@ -1,4 +1,8 @@
 ## CSCI E-31 Graduate Credit Assignment
 ### Student: Mohiuddin Faruqe
 
-### JS Fiddle Link: https://jsfiddle.net/faruqem/d6d8b8jf/
+### Closure: https://jsfiddle.net/faruqem/4w12hko1/
+### Simulating a long operation: https://jsfiddle.net/faruqem/1wmn7f2p/
+### Thread starvation: https://jsfiddle.net/faruqem/8o6f5y96/
+
+
