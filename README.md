@@ -133,7 +133,7 @@ fibonacciNumber(45);
 
 In the above discussion and example we saw Node.js is single threaded and optimized for single processor. Nonetheless, it is possible to utilize all the processor availble to a multi-core system using a module called "cluster" which is part of a core Node.js. Please, note that the processes do not share any common memory rather all inter process communications happen via IPC i.e. Inter Process Communication channel.
 
-#### If you have node.js installed on your machine, you can copy/paste or download the node-cluster.js file from the "sample_code" folder and run with $node node-cluster to see the output.
+#### If you have node.js installed on your machine, you can copy/paste or download the node-cluster.js file from the "sample_code" folder and run command `$ node node-cluster` to see the output.
 
 ```
 /*
