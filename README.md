@@ -16,12 +16,12 @@ To understand Node.js performance, first we need to understand an important conc
 * First-class function - a function treated like a regular variable. 
 * Self invoking function - function invoked while defined.  
 
-#### Please, read the inline comments while checking the code below for more explanation. You can also execute this code snippet in JSFiddle at the given URL to see the output in console (please, make sure your browser console is open):
+#### Please, read the inline comments while checking the code below for more explanation. You can also execute this code snippet in JSFiddle at the given URL to see the output in console (please, make sure your browser console is open): https://jsfiddle.net/faruqem/5g2zs2qx/
 
 ```
 /**
-  * Example of "Closures" and some other important features of Javascript
-  */
+ * Example of "Closures" and some other important features of Javascript
+ */
 
 //Outer anonymus function returns inner function which is then assigned 
 // to the variable "func"
@@ -50,8 +50,8 @@ Now with our above knowledge of JavaScript, using closures let's simulate two we
 
 ```
 /**
-  * Simulating long running parallel operations using a single thread.
-  */
+ * Simulating long running parallel operations using a single thread.
+ */
 
 console.log("Simulating a long running operation like database access.");
 
@@ -100,6 +100,8 @@ clientRequest({ id: 2 });
 
 #### Sample output:
 ```
+Simulating a long operation like database access
+-------------------------------------------
 Accessing the database to retrieve data that may take long time to complete, for request id: 1
 Accessing the database to retrieve data that may take long time to complete, for request id: 2
 Response to request id: 2
@@ -117,8 +119,8 @@ Our sample code above simulated a database operation. Node.js is primarily suite
 
 ```
 /**
-  * Simulation of Thread Starvation
-  */
+ * Simulation of Thread Starvation
+ */
   
 var startTime = new Date();
 setTimeout(function () {
@@ -137,8 +139,8 @@ function fibonacciNumber(num) {
 }
 
 //Run with and then without commenting out the following CPU intensive 
-// calculation function.          
-fibonacciNumber(45);
+// function call.          
+//fibonacciNumber(45);
 ```
 
 ### Node.js "cluster" module
@@ -149,9 +151,9 @@ In the above discussion and example we saw Node.js is single threaded and optimi
 
 ```
 /**
-  * Node.js "cluster" module example.
-  * This helps to utilize all CPU cores available to a particular system.
-  */
+ * Node.js "cluster" module example.
+ * This helps to utilize all CPU cores available to a particular system.
+ */
 const cluster = require('cluster');
 const http = require('http');
 const totalCPUs = require('os').cpus().length;
@@ -211,10 +213,10 @@ function childProcess() {
   });
   console.log(`Worker process ${process.pid} finished.`);
            
-  /* 
-    To exit uncomment the following two lines.
-    Don't exit if would like to keep the server running
-  */
+  /** 
+   * To exit uncomment the following two lines.
+   * Don't exit if would like to keep the server running
+   */
   //console.log(`Worker process ${process.pid} exiting.`);
   //process.exit();
                

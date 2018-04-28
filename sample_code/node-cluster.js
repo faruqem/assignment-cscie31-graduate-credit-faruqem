@@ -62,9 +62,9 @@ function childProcess() {
     console.log(`Worker process ${process.pid} finished.`);
 
     /** 
-      * To exit uncomment the following two lines.
-      * Don't exit if would like to keep the server running
-      */
+     * To exit uncomment the following two lines.
+     * Don't exit if would like to keep the server running
+     */
     //console.log(`Worker process ${process.pid} exiting.`);
     //process.exit();
     
