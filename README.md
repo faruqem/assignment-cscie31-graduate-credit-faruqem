@@ -21,7 +21,7 @@ To understand Node.js performance, first we need to understand an important conc
 ```
 /**
   * Example of "Closures" and some other important features of Javascript
-*/
+  */
 
 //Outer anonymus function returns inner function which is then assigned 
 // to the variable "func"
@@ -60,8 +60,7 @@ function clientRequest(request) {
   console.log('Accessing the database to retrieve data that may take long time to complete, for request id: ', request.id);
 
   //Inner function call that remembers the "request" passed from the outer function, 
-  // characteristic of a closure. Results will be returned via the callback function 
-  // "response".
+  // characteristic of a closure. Results will be returned via the callback function "response".
   accesDBAndRetrieveData(request, response);
 }
 
