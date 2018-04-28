@@ -59,7 +59,9 @@ console.log("Simulating a long running operation like database access.");
 function clientRequest(request) {
   console.log('Accessing the database to retrieve data that may take long time to complete, for request id: ', request.id);
 
-  //Inner function call that remembers the "request" passed from the outer function, // characteristic of a closure. Results will be returned via the callback function // "response".
+  //Inner function call that remembers the "request" passed from the outer function, 
+  // characteristic of a closure. Results will be returned via the callback function 
+  // "response".
   accesDBAndRetrieveData(request, response);
 }
 
@@ -110,7 +112,7 @@ Response to request id: 1
 
 ### Thread Starvation
 
-Our sample code above simulated a database operation. Node.js is primarily suited for this kind of I/O operation. But it's not very effcient in case of any CPU instensive operation. Look at the code sample below. There is function fibonacciNumber() to simulate a CPU intensive long running operation. By commenting out this function, when we run the code block it takes around 3 secs to finish the execution since SetTimeout() function is set to return the execute the callback function after 3,000 ms i.e. 3 secs. But if we uncomment the fibonacci function which simlulates CPU intesive operation, callback function of the setTimeout() function returns approx. 15 secs after (may vary a little based on your computer's CPU power), instead of 3 secs! It's because though both the operations started asychronously, the fibonacci function blocked the CPU, so the setTimeout() function from the same thread could not finish its execution on time. This is called Thread Startvation. So Node.js is good for database related longrunning operation which does not block the CPU but not very efficent if you are running concurrent CPU intesive operation using a single thread. 
+Our sample code above simulated a database operation. Node.js is primarily suited for this kind of I/O operation. But it's not very effcient in case of any CPU instensive operation. Look at the code sample below. There is a function fibonacciNumber() to simulate a CPU intensive long running operation. By commenting out this function, when we run the code block it takes around 3 secs to finish the execution since SetTimeout() function is set to return the execute the callback function after 3,000 ms i.e. 3 secs. But if we uncomment the fibonacci function which simlulates CPU intesive operation, callback function of the setTimeout() function returns approx. 15 secs after (may vary a little based on your computer's CPU power), instead of 3 secs! It's because though both the operations started executing asychronously, the fibonacci function blocked the CPU, so the setTimeout() function from the same thread could not finish its execution on time. This is called Thread Startvation. So Node.js is good for database related longrunning operation which does not block the CPU but not very efficent if you are running concurrent CPU intesive operations using a single thread. 
 
 #### Please, read the inline comments while checking the code below for more explanation. You can also execute this code snippet in JSFiddle at the given URL to see the output in console (please, make sure your browser console is open): https://jsfiddle.net/faruqem/8o6f5y96/
 
@@ -126,18 +128,18 @@ setTimeout(function () {
   console.log("Time Elapsed in Sec(s): ", timeElapsed);
 }, 3000);
 
-//Run with and then without commenting out the following CPU intensive 
-// calculation part.         
-///*
+         
+//CPU intensive function
 function fibonacciNumber(num) {
   if (num < 2)
     return 1;
   else
     return fibonacciNumber(num - 2) + fibonacciNumber(num - 1);
 }
-          
+
+//Run with and then without commenting out the following CPU intensive 
+// calculation function.          
 fibonacciNumber(45);
-//*/
 ```
 
 ### Node.js "cluster" module
@@ -150,7 +152,7 @@ In the above discussion and example we saw Node.js is single threaded and optimi
 /**
   * Node.js "cluster" module example.
   * This helps to utilize all CPU cores available to a particular system.
-*/
+  */
 const cluster = require('cluster');
 const http = require('http');
 const totalCPUs = require('os').cpus().length;
