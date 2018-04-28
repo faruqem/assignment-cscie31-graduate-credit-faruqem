@@ -10,13 +10,13 @@ In this article we will look into some Node.js internals and performance. We wil
 4. How we can use Node.js "cluster" module to take adavantage of a multi-core system.
 
 ### Closures, First Class Function and other JavaScript Features:
-To understand Node.js performance, first we need to understand an important concept of JavaScript - "Closure". Below is the example of a closure where the inner function has access to the variable (`outerFuncVar = 5`) of the outer function even when the outer function has finished execution. This example also demonstrates few other important concepts of JavaScript language: 
+To understand Node.js performance, first we need to understand an important concept of JavaScript - "Closures". Below is the example of a closures where the inner function has access to the variable value (`outerFuncVar = 5`) of the outer function even when the outer function has finished execution. This example also demonstrates few other important concepts of JavaScript language: 
 * Anonymus function - a function without a name.
 * Nested function - a function defined within another function.
 * First-class function - a function treated like a regular variable. 
 * Self invoking function - function invoked while defined.  
 
-Please, read the inline comments while checking the code for more explanation.
+#### Please, read the inline comments while checking the code for more explanation.
 
 ```
 /**
@@ -28,7 +28,7 @@ Please, read the inline comments while checking the code for more explanation.
 var func = (function () { 
 
   //Inner function retain this variable value (outerFuncVar = 5) of outer function 
-  // even though outer function finished execution - "Closure"
+  // even though outer function finished execution - "Closures"
   var outerFuncVar = 5; 
 
   //Nested inner anonymus function                  
@@ -44,29 +44,36 @@ func(10); // Output: 5 + 10 = 15
 func(15); // Output: 5 + 15 = 20
 ```
 ### Handling of Multiple Client Requests
-Now with our above knowledge of JavaScript, using closures let's simulate two web requests that require long opeartion of database access to retireve data. Using setTimeout function, long running operation has been simulated. We can see from the execution of `function clientRequest()`, request 1 did not block request 2, when the result is returned because of closure characteristics, the result set of request 1 and 2 correctly identified without any mixing up. This represents the event-driven, non-blocking I/O model of Node.js using a single thread. Because of the usage of a single thread to handle multiple requests, no time has been lost in context switching or new thread creation. At the same time none of the requests blocked each other and all of them ran simultaneously. As soon as the operation is completed, the response is sent to the appropriate request via its callback function.  </p>
+Now with our above knowledge of JavaScript, using closures let's simulate two web requests that require long opeartion of database access to retireve data. Using *setTimeout* function, long running operation has been simulated. We can see from the execution of `function clientRequest()`, request 1 did not block request 2, when the result is returned because of closure characteristics, the result set of request 1 and 2 correctly identified without any mixing up. *This represents the event-driven, non-blocking I/O model of Node.js using a single thread*. Because of the usage of a single thread to handle multiple requests, no time has been lost in context switching or new thread creation. At the same time none of the requests blocked each other and all of them ran simultaneously. As soon as the operation is completed, the response is sent to the appropriate request via its callback function.  </p>
 
-Please, read the inline comments while checking the code for more explanation.
-
-#### You can execute the following code here to see the output in console: https://jsfiddle.net/faruqem/1wmn7f2p/
+#### Please, read the inline comments while checking the code for more explanation. You can also execute the following code snippet in JSFiddle here to see the output in console (please, make sure your browser console is open): https://jsfiddle.net/faruqem/1wmn7f2p/
 
 ```
-console.log("Simulating a long operation like database access");
-            
+/**
+  * Simulating long running parallel operations using a single thread.
+  */
+
+console.log("Simulating a long running operation like database access.");
+
+//Outer function            
 function clientRequest(request) {
   console.log('Accessing the database to retrieve data that may take long time to complete, for request id: ', request.id);
 
-  //Inner function call that remembers the "request" passed from the outer function - characteristic of a closure.
+  //Inner function call that remembers the "request" passed from the outer function - // characteristic of a closure. Results will be returned via the callback function // "response".
   accesDBAndRetrieveData(request, response);
 }
-            
+
+//Definition of inner function that returns the response via the anonymus callback
+// function represents by the variable "response" and passed to this function
+// as a paramter value to the "callbackResponse"         
 function accesDBAndRetrieveData(request, callbackResponse) {
   // 1-5 secs operation simulation
   var timeoutMS = (Math.round(Math.random() * 4) + 1) * 1000;
   
   setTimeout(callbackResponse, timeoutMS, request);
 }
-            
+
+//Anonymus callback function assigned to the variable "response"           
 var response = function (request) {
   var dbRecord = {};
   console.log('Response to request id:', request.id);   
@@ -85,19 +92,21 @@ var response = function (request) {
   console.log(dbRecord);
 }
             
-//Simulate two web requests
+//Two sample calls to simulate two web requests
 clientRequest({ id: 1 });
-clientRequest({ id: 2 });
+clientRequest({ id: 2 });            
+```
 
-/* Sample output:
+#### Sample output:
+```
 Accessing the database to retrieve data that may take long time to complete, for request id: 1
 Accessing the database to retrieve data that may take long time to complete, for request id: 2
 Response to request id: 2
 {customer_id: 2, customer_name: "Ru Haque"}
 Response to request id: 1
 {customer_id: 1, customer_name: "Mo Faruqe"}
-*/            
 ```
+
 
 ### Thread Starvation
 
