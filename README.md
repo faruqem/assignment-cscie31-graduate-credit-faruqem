@@ -270,4 +270,4 @@ Worker process 14471 received message: {"msg":"Message from master 14468 to work
 ```
 Anyway, it's better to use mutiple servers with a single processor using traditional load balancing system rather than using a single server with mutiple core. This is to avoid any overhead involved with creating and managing multiple worker processes.
 
-Hope this above examples and explanations gave you a better idea of Node.js internals and performnace basics.
+Hope these above examples and explanations gave you a better idea of Node.js internals and performance basics.
