@@ -7,7 +7,7 @@ In this article we will look into some Node.js internals and performance. We wil
 1. Closures, first class function and other JavaScript features that will help us understanding Node.js design principles.
 2. How Node.js handles multiple client requests asynchonoisly with a single thread.
 3. Thread starvation and why Node.js is not particularly suitable for CPU intensive tasks.
-4. How we can use Node.js "cluster" module to take adavantage of a system with multi-core.
+4. How we can use Node.js "cluster" module to take adavantage of a multi-core system.
 
 ### Closures, First Class Function and other JavaScript Features:
 To understand Node.js performance, first we need to understand an important concept of JavaScript - "Closure". Below is the example of a closure where the inner function has access to the variable (`outerFuncVar = 5`) of the outer function even when the outer function has finished execution. This example also demonstrates few other important concepts of JavaScript language: 
@@ -18,23 +18,28 @@ To understand Node.js performance, first we need to understand an important conc
 
 Please, read the inline comments while checking the code for more explanation.
 
-#### You can execute the following code here to see the output in console: https://jsfiddle.net/faruqem/4w12hko1/
-
 ```
-/*
-  Outer function returns inner function which is then assigned 
-  to a variable - a charactertistic of a first class function 
-  i.e. function that can be treated like a regular variable.
+/**
+  * Example of "Closures" and some other important features of Javascript
 */
-var func = (function () { //Outer anonymus function
-  var outerFuncVar = 5; //Inner function retain this variable value of outer function 
-    			//even though outer function finished execution - "Closure"
-                    
-  return function(innerFuncParameter) { //Nested inner anonymus function
+
+//Outer anonymus function returns inner function which is then assigned 
+// to the variable "func"
+var func = (function () { 
+
+  //Inner function retain this variable value (outerFuncVar = 5) of outer function 
+  // even though outer function finished execution - "Closure"
+  var outerFuncVar = 5; 
+
+  //Nested inner anonymus function                  
+  return function(innerFuncParameter) { 
     console.log (`Sum: %s`, outerFuncVar + innerFuncParameter);
   }
-})(); //Self invoked
 
+//Outer function returned via self invoking
+})(); 
+
+//Sample calls
 func(10); // Output: 5 + 10 = 15
 func(15); // Output: 5 + 15 = 20
 ```
